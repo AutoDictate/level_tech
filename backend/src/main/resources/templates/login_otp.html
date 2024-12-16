@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OTP Verification</title>
+</head>
+<body>
+<p>Hi <span th:text="${user.name}"></span>,</p>
+<p>Thank you for using our application! We received a request to verify your login.</p>
+<h3>Your One-Time Password (OTP):</h3>
+<p>Your OTP for logging in is: <strong th:text="${otp}"></strong></p>
+<p>Please enter this code to verify your login. Remember that this OTP is valid for <strong>2 minutes</strong>.</p>
+<p>If you did not request this OTP, please ignore this email.</p>
+<p>If you have any questions or need further assistance, feel free to contact our support team.</p>
+<p>Thank you,<br>The Level Tech Team</p>
+</body>
+</html>

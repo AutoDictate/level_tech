@@ -1,0 +1,93 @@
+server:
+  port: 9090
+  error:
+    include-message: always
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
+
+baseUrl: "http://localhost:9090/"
+
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: back2u
+  datasource:
+    url: jdbc:mysql://localhost:3306/leveltech
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      max-lifetime: 1800000 # 30 minutes
+      idle-timeout: 600000  # 10 minutes
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    open-in-view: true
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jayasurya0206@gmail.com
+    password: fbne qwia urob iepl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+application:
+  security:
+    access-token: 32983183dc88412aa7f4aaC26497bFa9d7e9d2d73a312ceD97ee3d03508eeece
+    expiration: 86400000
+    refresh-token:
+      expiration: 604800000
+  admin:
+    name: "admin"
+    email: "admin@gmail.com"
+    password: "admin@123"
+    phone-code: "+91"
+    phone-no: "1234567890"
+  date:
+    format: DD-MM-YYYY
+password:
+  reset:
+    link: "http://localhost:5173/reset-password?token="
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql: TRACE
+    root: INFO
+    com.level.tech: INFO
+
+springdoc:
+  swagger-ui:
+    display-request-duration: true

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: Level Tech
+  profiles:
+    active: dev
