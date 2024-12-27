@@ -45,9 +45,21 @@ public class CustomerController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-        return new ResponseEntity<>(
-                customerService.getCustomers(), HttpStatus.OK);
+    public ResponseEntity<?> getAllCustomers(
+            @RequestParam(name = "pageNo") Integer pageNo,
+            @RequestParam(name = "count") Integer count,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(name = "orderBy", required = false, defaultValue = "asc") String orderBy,
+            @RequestParam(name = "search", required = false) String search
+    ) {
+        if (pageNo != null && count != null && pageNo > 0) {
+            pageNo = pageNo - 1;
+            return new ResponseEntity<>(
+                    customerService.getAllCustomer(pageNo, count, sortBy, orderBy, search), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    customerService.getCustomers(), HttpStatus.OK);
+        }
     }
 
     @DeleteMapping
@@ -56,7 +68,7 @@ public class CustomerController {
     ) {
         customerService.deleteCustomers(customerIds);
         return new ResponseEntity<>(
-                new ResponseData("Customers deleted successfully") , HttpStatus.OK);
+                new ResponseData("Customers deleted successfully"), HttpStatus.OK);
     }
 
 }

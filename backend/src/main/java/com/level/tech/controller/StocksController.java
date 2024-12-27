@@ -26,6 +26,9 @@ public class StocksController {
             @RequestParam(name = "orderBy", required = false, defaultValue = "asc") String orderBy,
             @RequestParam(name = "search", required = false) String search
     ) {
+        if (pageNo != null && count != null && pageNo > 0) {
+            pageNo = pageNo - 1;
+        }
         return new ResponseEntity<>(
                 stocksService.getAllStocks(branch, pageNo, count, sortBy, orderBy, search), HttpStatus.OK);
     }

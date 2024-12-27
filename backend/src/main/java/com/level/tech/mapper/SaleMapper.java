@@ -21,18 +21,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaleMapper {
 
-    private final SaleItemMapper saleItemMapper;
-
     private final CustomerRepository customerRepository;
+
+    private final SaleItemMapper saleItemMapper;
 
     private final SaleRepository saleRepository;
 
     @Transactional
     public Sale toEntity(final SaleRequest request) {
-        List<SaleItem> saleItems = request.getSaleItemRequest()
-                .stream()
-                .map(saleItemMapper::toEntity)
-                .toList();
 
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(()-> new EntityNotFoundException("Customer not found"));
@@ -47,6 +43,7 @@ public class SaleMapper {
         sale.setInvoiceNo(request.getInvoiceNo());
         sale.setYear(request.getYear());
         sale.setBillDate(request.getBillDate());
+        sale.setDeliveryNo(request.getDeliveryNo());
         sale.setDeliveryDate(request.getDeliveryDate());
         sale.setPurchaseOrderNo(request.getPurchaseOrderNo());
         sale.setReverseCharge(request.getReverseCharge());
@@ -60,6 +57,12 @@ public class SaleMapper {
         sale.setPaidAmount(request.getPaidAmount());
         sale.setSubTotal(request.getSubTotal());
         sale.setGrandTotal(request.getGrandTotal());
+
+        List<SaleItem> saleItems = request.getSaleItemRequest()
+                .stream()
+                .map(si -> saleItemMapper.toEntity(si, sale))
+                .toList();
+
         sale.setSaleItems(saleItems);
 
         return saleRepository.save(sale);
@@ -67,10 +70,6 @@ public class SaleMapper {
 
     @Transactional
     public Sale updateSale(final Long saleId, final SaleRequest request) {
-        List<SaleItem> saleItems = request.getSaleItemRequest()
-                .stream()
-                .map(saleItemMapper::toEntity)
-                .toList();
 
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(()-> new EntityNotFoundException("Customer not found"));
@@ -100,6 +99,12 @@ public class SaleMapper {
         sale.setPaidAmount(request.getPaidAmount());
         sale.setSubTotal(request.getSubTotal());
         sale.setGrandTotal(request.getGrandTotal());
+
+        List<SaleItem> saleItems = request.getSaleItemRequest()
+                .stream()
+                .map(si -> saleItemMapper.toEntity(si, sale))
+                .toList();
+
         sale.setSaleItems(saleItems);
 
         return saleRepository.save(sale);
@@ -123,6 +128,7 @@ public class SaleMapper {
         saleDTO.setInvoiceNo(sale.getInvoiceNo());
         saleDTO.setYear(sale.getYear());
         saleDTO.setBillDate(sale.getBillDate());
+        saleDTO.setDeliveryNo(saleDTO.getDeliveryNo());
         saleDTO.setDeliveryDate(sale.getDeliveryDate());
         saleDTO.setPurchaseOrderNo(sale.getPurchaseOrderNo());
         saleDTO.setReverseCharge(sale.getReverseCharge());

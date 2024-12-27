@@ -43,7 +43,7 @@ public class ProductController {
                 productService.getProduct(productId), HttpStatus.OK);
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/{categoryId}/category")
     public ResponseEntity<List<KeyValueDTO>> getProductsByCategoryId(
             @PathVariable(name = "categoryId") Long categoryId
     ) {

@@ -56,6 +56,10 @@ public class PurchaseMapper {
         purchase.setStarred(Boolean.FALSE);
         purchase.setTotalAmount(request.getTotalAmount());
 
+        purchase = purchaseRepository.save(purchase);
+
+        System.out.println(purchase.getId());
+
         List<PurchaseDetails> purchaseDetails = new ArrayList<>();
         for (PurchaseDetailRequest req : request.getPurchaseDetails()) {
             PurchaseDetails details = purchaseDetailsMapper.toEntity(req, purchase.getId());

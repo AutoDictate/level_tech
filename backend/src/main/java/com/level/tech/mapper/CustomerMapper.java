@@ -43,10 +43,7 @@ public class CustomerMapper {
 
         List<PhoneNumber> phoneNumbers = request.getPhoneNo()
                 .stream()
-                .map(p-> {
-                    PhoneNumber phoneNumber = new PhoneNumber(p, customer);
-                    return phoneNumberRepository.save(phoneNumber);
-                })
+                .map(p -> new PhoneNumber(p, customer)) // PhoneNumber constructor associates with Customer
                 .toList();
 
         customer.setPhoneNo(phoneNumbers);

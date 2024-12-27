@@ -29,4 +29,6 @@ public class SaleItemRequest {
 
     private String serviceRemarks;
 
+    private Long saleId;
+
 }

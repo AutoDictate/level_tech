@@ -1,5 +1,6 @@
 package com.level.tech.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class PhoneNumber {
     private String phoneNo;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "company_id", nullable = false)
     private Customer customer;
 

@@ -43,7 +43,7 @@ public class ModelController {
                 modelService.getModel(modelId), HttpStatus.OK);
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/{productId}/product")
     public ResponseEntity<List<KeyValueDTO>> getModelByProductId(
             @PathVariable(name = "productId") Long productId
     ) {

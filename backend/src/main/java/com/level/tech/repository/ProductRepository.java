@@ -1,6 +1,5 @@
 package com.level.tech.repository;
 
-import com.level.tech.entity.Category;
 import com.level.tech.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,8 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p " +
            "FROM Product p " +
            "WHERE p.name = :productName " +
-           "AND p.category = :category")
-    Optional<Product> findByProductNameAndCategory(@Param("productName") String productName, @Param("category") Category category);
+           "AND p.category.name = :category")
+    Optional<Product> findByProductNameAndCategory(@Param("productName") String productName, @Param("category") String category);
 
     @Query("SELECT p " +
            "FROM Product p " +

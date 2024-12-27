@@ -42,18 +42,22 @@ public class MasterProductMapper {
         Category category = categoryRepository.findByName(request.getCategory())
                 .orElseGet(()-> categoryMapper.addCategory(request.getCategory()));
 
-        Product product = productRepository.findByProductNameAndCategory(request.getProduct(), category)
+        Product product = productRepository.findByProductNameAndCategory(request.getProduct(), category.getName())
                 .orElseGet(()-> productMapper.addProduct(category, request.getProduct()));
 
         if (!product.getCategory().getId().equals(category.getId())) {
             throw new IllegalArgumentException("Product does not belong to the specified Category");
         }
 
-        Model model = modelRepository.findByNameAndProduct(request.getModel(), product)
+        Model model = modelRepository.findByNameAndProductAndCategory(request.getModel(), product.getName(), category.getName())
                 .orElseGet(()-> modelMapper.addModel(product, request.getModel()));
 
         if (!model.getProduct().getId().equals(product.getId())) {
             throw new IllegalArgumentException("Model does not belong to the specified Product");
+        }
+
+        if (masterProductRepository.existsByCategoryAndProductAndModel(category, product, model)) {
+            return masterProductRepository.findByCategoryAndProductAndModel(category, product, model);
         }
 
         MasterProduct masterProduct = new MasterProduct();
@@ -75,14 +79,14 @@ public class MasterProductMapper {
         Category category = categoryRepository.findByName(request.getCategory())
                 .orElseGet(()-> categoryMapper.addCategory(request.getCategory()));
 
-        Product product = productRepository.findByProductNameAndCategory(request.getProduct(), category)
+        Product product = productRepository.findByProductNameAndCategory(request.getProduct(), category.getName())
                 .orElseGet(()-> productMapper.addProduct(category, request.getProduct()));
 
         if (!product.getCategory().getId().equals(category.getId())) {
             throw new IllegalArgumentException("Product does not belong to the specified Category");
         }
 
-        Model model = modelRepository.findByNameAndProduct(request.getModel(), product)
+        Model model = modelRepository.findByNameAndProductAndCategory(request.getModel(), product.getName(), category.getName())
                 .orElseGet(()-> modelMapper.addModel(product, request.getModel()));
 
         if (!model.getProduct().getId().equals(product.getId())) {

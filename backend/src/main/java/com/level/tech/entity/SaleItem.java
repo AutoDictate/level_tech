@@ -25,7 +25,7 @@ public class SaleItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sale_id", nullable = false)
+    @JoinColumn(name = "sale_id")
     private Sale sale;
 
     @ManyToOne

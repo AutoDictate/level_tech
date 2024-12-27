@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
@@ -46,7 +45,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
            "JOIN p.purchaseDetails pd " +
            "WHERE p.consignedTo = :branch " +
            "GROUP BY pd.masterProduct.id")
-    Map<Long, Integer> getTotalPurchaseQuantities(@Param("branch") Branch branch);
+    List<Object[]> getTotalPurchaseQuantities(@Param("branch") Branch branch);
 
     @Query("SELECT p " +
            "FROM Purchase p " +

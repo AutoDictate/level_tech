@@ -4,9 +4,12 @@ import com.level.tech.dto.SaleItemDTO;
 import com.level.tech.dto.request.MasterProductRequest;
 import com.level.tech.dto.request.SaleItemRequest;
 import com.level.tech.entity.MasterProduct;
+import com.level.tech.entity.Sale;
 import com.level.tech.entity.SaleItem;
 import com.level.tech.exception.EntityNotFoundException;
+import com.level.tech.repository.MasterProductRepository;
 import com.level.tech.repository.SaleItemRepository;
+import com.level.tech.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SaleItemMapper {
 
+    private final MasterProductRepository masterProductRepository;
+
     private final SaleItemRepository saleItemRepository;
+
+    private final SaleRepository saleRepository;
 
     private final MasterProductMapper productMapper;
 
     @Transactional
-    public SaleItem toEntity(final SaleItemRequest request) {
+    public SaleItem toEntity(final SaleItemRequest request, final Sale sale) {
+
         SaleItem saleItem = new SaleItem();
+        saleItem.setSale(sale);
         saleItem.setTax(request.getTax());
         saleItem.setAmount(request.getAmount());
         saleItem.setTaxAmount(request.getTaxAmount());
@@ -79,7 +88,8 @@ public class SaleItemMapper {
         masterProductRequest.setTax(request.getTax());
         masterProductRequest.setHsnAcs(request.getHsnNo());
 
-        return productMapper.addMasterProduct(masterProductRequest);
+        return masterProductRepository.findByCategoryNameAndProductNameAndModelName(request.getCategoryName(), request.getProductName(), request.getModelName())
+                .orElseGet(()-> productMapper.addMasterProduct(masterProductRequest));
     }
 
 }

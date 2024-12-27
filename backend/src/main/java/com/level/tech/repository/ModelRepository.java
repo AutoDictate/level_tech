@@ -18,8 +18,13 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
     @Query("SELECT m " +
            "FROM Model m " +
            "WHERE m.name = :name " +
-           "AND m.product = :product")
-    Optional<Model> findByNameAndProduct(@Param("name") String name, @Param("product") Product product);
+           "AND m.product.name = :product " +
+           "AND m.product.category.name = :category")
+    Optional<Model> findByNameAndProductAndCategory(
+            @Param("name") String name,
+            @Param("product") String product,
+            @Param("category") String category
+    );
 
     @Query("SELECT m " +
            "FROM Model m " +

@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,8 +52,19 @@ public class StocksServiceImpl implements StocksService {
         Pageable pageable = PageRequest.of(pageNo, count, sort);
 
         // Fetch total purchase and sale quantities using aggregated queries
-        Map<Long, Integer> purchaseCount = purchaseRepository.getTotalPurchaseQuantities(branch);
-        Map<Long, Integer> salesCount = saleRepository.getTotalSaleQuantities(branch);
+        List<Object[]> purchaseQuantities = purchaseRepository.getTotalPurchaseQuantities(branch);
+        Map<Long, Integer> purchaseCount = purchaseQuantities.stream()
+                .collect(Collectors.toMap(
+                        obj -> (Long) obj[0],
+                        obj -> ((Number) obj[1]).intValue()
+                ));
+
+        List<Object[]> salesQuantities = saleRepository.getTotalSaleQuantities(branch);
+        Map<Long, Integer> salesCount = salesQuantities.stream()
+                .collect(Collectors.toMap(
+                        obj -> (Long) obj[0],
+                        obj -> ((Number) obj[1]).intValue()
+                ));
 
         List<StocksDTO> stocks = new ArrayList<>();
 
@@ -105,7 +117,10 @@ public class StocksServiceImpl implements StocksService {
             dto.setTotalProducts(purchaseCount.getOrDefault(mp.getId(), 0));
             dto.setSold(salesCount.getOrDefault(mp.getId(), 0));
             dto.setInStock(
-                    purchaseCount.getOrDefault(mp.getId(), 0) - salesCount.getOrDefault(mp.getId(), 0)
+                    Math.max(
+                            purchaseCount.getOrDefault(mp.getId(), 0) - salesCount.getOrDefault(mp.getId(), 0),
+                            0
+                    )
             );
 
             stocks.add(dto);

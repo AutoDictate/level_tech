@@ -1,6 +1,7 @@
 package com.level.tech.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.level.tech.enums.Title;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class Customer {
     @Column(name = "full_address", columnDefinition = "TEXT")
     private String fullAddress;
 
-    @Column(name = "city", unique = true)
+    @Column(name = "city")
     private String city;
 
     @Column(name = "postCode")
@@ -52,6 +53,7 @@ public class Customer {
     private State state;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PhoneNumber> phoneNo = new ArrayList<>();
 
 

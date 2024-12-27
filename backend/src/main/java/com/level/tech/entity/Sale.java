@@ -30,6 +30,13 @@ public class Sale {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SaleItem> saleItems;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
     @Column(name = "gst_no")
     private String gstNo;
 
@@ -56,6 +63,9 @@ public class Sale {
 
     @Column(name = "bill_date", nullable = false)
     private LocalDate billDate;
+
+    @Column(name = "delivery_no")
+    private String deliveryNo;
 
     @Column(name = "delivery_date")
     private LocalDate deliveryDate;
@@ -96,13 +106,6 @@ public class Sale {
     @Column(name = "grand_total", nullable = false)
     private double grandTotal;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SaleItem> saleItems;
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
-
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -118,4 +121,10 @@ public class Sale {
     @LastModifiedBy
     @Column(name = "last_modified_by")
     private String lastModifiedBy;
+
+    @PreRemove
+    public void clearAssociations() {
+        this.saleItems = null;
+    }
+
 }

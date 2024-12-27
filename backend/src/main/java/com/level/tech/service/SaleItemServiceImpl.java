@@ -2,6 +2,7 @@ package com.level.tech.service;
 
 import com.level.tech.dto.SaleItemDTO;
 import com.level.tech.dto.request.SaleItemRequest;
+import com.level.tech.entity.Sale;
 import com.level.tech.entity.SaleItem;
 import com.level.tech.exception.EntityNotFoundException;
 import com.level.tech.mapper.SaleItemMapper;
@@ -21,8 +22,8 @@ public class SaleItemServiceImpl implements SaleItemService {
     private final SaleItemMapper saleItemMapper;
 
     @Override
-    public SaleItemDTO addSaleItem(final SaleItemRequest request) {
-        var savedDetails = saleItemMapper.toEntity(request);
+    public SaleItemDTO addSaleItem(final SaleItemRequest request, final Sale sale) {
+        var savedDetails = saleItemMapper.toEntity(request, sale);
         return saleItemMapper.toDTO(savedDetails);
     }
 

@@ -22,7 +22,7 @@ public class ProductMapper {
     @Transactional
     public Product addProduct(final Category category, final String name) {
 
-        if (productRepository.findByProductNameAndCategory(name, category).isPresent()) {
+        if (productRepository.findByProductNameAndCategory(name, category.getName()).isPresent()) {
             throw new AlreadyExistsException("Product already added in this category");
         }
         Product product = new Product(name, category);

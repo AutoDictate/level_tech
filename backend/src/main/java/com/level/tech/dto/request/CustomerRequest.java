@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -30,13 +29,5 @@ public class CustomerRequest {
     private String postCode;
 
     private Long state;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime lastModifiedAt;
-
-    private String createdBy;
-
-    private String lastModifiedBy;
 
 }

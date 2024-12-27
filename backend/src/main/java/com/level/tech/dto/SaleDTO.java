@@ -38,6 +38,8 @@ public class SaleDTO {
 
     private LocalDate billDate;
 
+    private String deliveryNo;
+
     private LocalDate deliveryDate;
 
     private String purchaseOrderNo;
