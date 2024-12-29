@@ -4,6 +4,7 @@ import com.level.tech.dto.SaleDTO;
 import com.level.tech.dto.request.SaleRequest;
 import com.level.tech.dto.response.PagedResponseDTO;
 import com.level.tech.entity.Sale;
+import com.level.tech.entity.SaleItem;
 import com.level.tech.exception.EntityNotFoundException;
 import com.level.tech.mapper.SaleMapper;
 import com.level.tech.repository.SaleRepository;
@@ -20,6 +21,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService {
+
+    private final SaleItemService saleItemService;
 
     private final SaleRepository saleRepository;
 
@@ -40,13 +43,14 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public SaleDTO getSale(final Long saleId) {
         return saleRepository.findById(saleId)
+                .filter(s -> !s.getIsDeleted())
                 .map(saleMapper::toDTO)
                 .orElseThrow(()-> new EntityNotFoundException("Sales not found"));
     }
 
     @Override
     public List<SaleDTO> getSales() {
-        return saleRepository.findAll()
+        return saleRepository.findAllByActive()
                 .stream()
                 .map(saleMapper::toDTO)
                 .toList();
@@ -73,7 +77,7 @@ public class SaleServiceImpl implements SaleService {
 
         if (startDate == null || endDate == null) {
             saleList = (search == null || search.isBlank())
-                    ? saleRepository.findAll(pageable)
+                    ? saleRepository.findAllByActive(pageable)
                     : saleRepository.findAllSales(search, pageable);
         } else {
             saleList = saleRepository.findAllByDateRangeAndField(
@@ -95,11 +99,20 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public void deleteSale(final Long saleId) {
+        Sale sale = saleRepository.findById(saleId)
+                .orElseThrow(()-> new EntityNotFoundException("Sale not found"));
 
+        List<Long> saleItemIds = sale.getSaleItems().stream()
+                .map(SaleItem::getId)
+                .toList();
+        saleItemService.deleteSaleItems(saleItemIds);
+
+        sale.setIsDeleted(Boolean.TRUE);
+        saleRepository.save(sale);
     }
 
     @Override
     public void deleteSales(final List<Long> saleIds) {
-
+        saleIds.forEach(this::deleteSale);
     }
 }

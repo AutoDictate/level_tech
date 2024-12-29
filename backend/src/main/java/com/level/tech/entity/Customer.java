@@ -56,6 +56,8 @@ public class Customer {
     @JsonManagedReference
     private List<PhoneNumber> phoneNo = new ArrayList<>();
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

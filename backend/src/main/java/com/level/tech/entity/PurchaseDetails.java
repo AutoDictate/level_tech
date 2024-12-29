@@ -53,6 +53,9 @@ public class PurchaseDetails {
     @Column(name = "include_tax")
     private Boolean includeTax;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

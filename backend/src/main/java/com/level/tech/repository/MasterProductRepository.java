@@ -28,7 +28,33 @@ public interface MasterProductRepository extends JpaRepository<MasterProduct, Lo
 
     boolean existsByCategoryAndProductAndModel(Category category, Product product, Model model);
 
-    MasterProduct findByCategoryAndProductAndModel(Category category, Product product, Model model);
+    @Query("SELECT m " +
+           "FROM MasterProduct m " +
+           "WHERE m.category = :category " +
+           "AND m.product = :product " +
+           "AND m.model = :model " +
+           "AND m.isDeleted = false")
+    MasterProduct findByCategoryAndProductAndModel(@Param("category") Category category,
+                                                   @Param("product") Product product,
+                                                   @Param("model") Model model);
 
-    Optional<MasterProduct> findByCategoryNameAndProductNameAndModelName(String categoryName, String productName, String modelName);
+    @Query("SELECT m " +
+           "FROM MasterProduct m " +
+           "WHERE m.category.name = :category " +
+           "AND m.product.name = :product " +
+           "AND m.model.name = :model " +
+           "AND m.isDeleted = false")
+    Optional<MasterProduct> findByCategoryNameAndProductNameAndModelName(@Param("category") String category,
+                                                                         @Param("product") String product,
+                                                                         @Param("model") String model);
+
+    @Query("SELECT m " +
+           "FROM MasterProduct m " +
+           "WHERE m.isDeleted = false")
+    Page<MasterProduct> findAllByActive(Pageable pageable);
+
+    @Query("SELECT m " +
+           "FROM MasterProduct m " +
+           "WHERE m.isDeleted = false")
+    Page<MasterProduct> findAllByActive();
 }

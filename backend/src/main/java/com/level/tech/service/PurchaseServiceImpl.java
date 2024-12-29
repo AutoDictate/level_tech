@@ -44,13 +44,14 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public PurchaseDTO getPurchase(final Long id) {
         return purchaseRepository.findById(id)
+                .filter(p -> !p.getIsDeleted())
                 .map(purchaseMapper::toDTO)
                 .orElseThrow(()-> new EntityNotFoundException("Purchase not found"));
     }
 
     @Override
     public List<PurchaseDTO> getPurchases() {
-        return purchaseRepository.findAll()
+        return purchaseRepository.findAllByActive()
                 .stream()
                 .map(purchaseMapper::toDTO)
                 .toList();
@@ -77,7 +78,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         if (startDate == null || endDate == null) {
             purchaseList = (search == null || search.isBlank())
-                    ? purchaseRepository.findAll(pageable)
+                    ? purchaseRepository.findAllByActive(pageable)
                     : purchaseRepository.findAllPurchases(search, pageable);
         } else {
 
@@ -111,6 +112,8 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .toList();
 
         purchaseDetailsService.deletePurchaseDetails(purchaseDetailIds);
+
+        purchase.setIsDeleted(Boolean.TRUE);
         purchaseRepository.delete(purchase);
     }
 

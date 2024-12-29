@@ -39,13 +39,14 @@ public class MasterProductServiceImpl implements MasterProductService {
     @Override
     public MasterProductDTO getMasterProduct(final Long id) {
         return masterProductRepository.findById(id)
+                .filter(mp-> !mp.getIsDeleted())
                 .map(productMapper::toDTO)
                 .orElseThrow(()-> new EntityNotFoundException("Master product not found"));
     }
 
     @Override
     public List<MasterProductDTO> getAllMasterProducts() {
-        return masterProductRepository.findAll()
+        return masterProductRepository.findAllByActive()
                 .stream()
                 .map(productMapper::toDTO)
                 .toList();
@@ -66,7 +67,7 @@ public class MasterProductServiceImpl implements MasterProductService {
         );
 
         Page<MasterProduct> masterProductList = (search == null || search.isBlank())
-                ? masterProductRepository.findAll(pageable)
+                ? masterProductRepository.findAllByActive(pageable)
                 : masterProductRepository.findAllMasterProducts(search, pageable);
 
         List<MasterProductDTO> allMasterProducts = masterProductList.getContent()
@@ -82,10 +83,8 @@ public class MasterProductServiceImpl implements MasterProductService {
         MasterProduct product = masterProductRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Master product not found"));
 
-        product.setProduct(null);
-        product.setCategory(null);
-        product.setModel(null);
-        masterProductRepository.delete(product);
+        product.setIsDeleted(Boolean.TRUE);
+        masterProductRepository.save(product);
     }
 
     @Override

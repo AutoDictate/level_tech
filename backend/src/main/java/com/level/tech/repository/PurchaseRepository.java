@@ -16,6 +16,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     @Query("""
             SELECT p FROM Purchase p
             WHERE (:search IS NULL OR LOWER(p.orderNo) LIKE LOWER(CONCAT('%', :search, '%')))
+            AND p.isDeleted = false 
               AND (
                    (:dateFilterBy = 'createdAt' AND p.createdAt BETWEEN :start AND :end)
                 OR (:dateFilterBy = 'orderDate' AND p.orderDate BETWEEN :start AND :end)
@@ -37,14 +38,16 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
         LOWER(p.modeOfDispatch) LIKE LOWER(CONCAT('%', :search, '%')) OR
         LOWER(p.transporter) LIKE LOWER(CONCAT('%', :search, '%')) OR
         LOWER(p.lrRrNo) LIKE LOWER(CONCAT('%', :search, '%')) OR
-        LOWER(p.vendor.name) LIKE LOWER(CONCAT('%', :search, '%'))""")
+        LOWER(p.vendor.name) LIKE LOWER(CONCAT('%', :search, '%')) 
+    AND p.isDeleted = false""")
     Page<Purchase> findAllPurchases(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT pd.masterProduct.id, SUM(pd.quantity) " +
            "FROM Purchase p " +
            "JOIN p.purchaseDetails pd " +
            "WHERE p.consignedTo = :branch " +
-           "GROUP BY pd.masterProduct.id")
+           "AND p.isDeleted = false " +
+           "GROUP BY pd.masterProduct.id ")
     List<Object[]> getTotalPurchaseQuantities(@Param("branch") Branch branch);
 
     @Query("SELECT p " +
@@ -54,4 +57,13 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
            "AND p.consignedTo = :branch")
     List<Purchase> findPurchasesByProduct(@Param("productId") Long productId, @Param("branch") Branch branch);
 
+    @Query("SELECT p " +
+           "FROM Product p " +
+           "WHERE p.isDeleted = false")
+    Page<Purchase> findAllByActive(Pageable pageable);
+
+    @Query("SELECT p " +
+           "FROM Product p " +
+           "WHERE p.isDeleted = false")
+    List<Purchase> findAllByActive();
 }

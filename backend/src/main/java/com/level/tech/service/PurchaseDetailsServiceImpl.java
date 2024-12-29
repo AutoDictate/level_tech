@@ -35,13 +35,14 @@ public class PurchaseDetailsServiceImpl implements PurchaseDetailsService {
     @Override
     public PurchaseDetailsDTO getPurchaseDetail(final Long id) {
         return purchaseDetailsRepository.findById(id)
+                .filter(p -> !p.getIsDeleted())
                 .map(detailsMapper::toDTO)
                 .orElseThrow(()-> new EntityNotFoundException("Purchase Details not found"));
     }
 
     @Override
     public List<PurchaseDetailsDTO> getPurchaseDetails() {
-        return purchaseDetailsRepository.findAll()
+        return purchaseDetailsRepository.findAllByActive()
                 .stream()
                 .map(detailsMapper::toDTO)
                 .toList();
@@ -52,7 +53,9 @@ public class PurchaseDetailsServiceImpl implements PurchaseDetailsService {
     public void deletePurchaseDetail(final Long id) {
         PurchaseDetails purchaseDetails = purchaseDetailsRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Purchase Details not found"));
-        purchaseDetailsRepository.delete(purchaseDetails);
+
+        purchaseDetails.setIsDeleted(Boolean.TRUE);
+        purchaseDetailsRepository.save(purchaseDetails);
     }
 
     @Override

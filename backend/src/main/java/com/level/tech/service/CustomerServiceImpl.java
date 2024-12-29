@@ -46,13 +46,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO getCustomer(final Long id) {
         return customerRepository.findById(id)
+                .filter(c -> !c.getIsDeleted())
                 .map(customerMapper::toDTO)
                 .orElseThrow(()-> new EntityNotFoundException("Customer not Found"));
     }
 
     @Override
     public List<CustomerDTO> getCustomers() {
-        return customerRepository.findAll()
+        return customerRepository.findAllByActive()
                 .stream()
                 .map(customerMapper::toDTO)
                 .toList();
@@ -73,7 +74,7 @@ public class CustomerServiceImpl implements CustomerService {
         );
 
         Page<Customer> customerList = (search == null || search.isBlank())
-                ? customerRepository.findAll(pageable)
+                ? customerRepository.findAllByActive(pageable)
                 : customerRepository.findAllCustomers(search, pageable);
 
         List<CustomerDTO> allCustomers = customerList.getContent()
@@ -88,7 +89,8 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomer(final Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Customer not Found"));
-        customerRepository.delete(customer);
+        customer.setIsDeleted(Boolean.TRUE);
+        customerRepository.save(customer);
     }
 
     @Override

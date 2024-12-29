@@ -50,6 +50,9 @@ public class SaleItem {
     @Column(name = "service_remarks", columnDefinition = "TEXT")
     private String serviceRemarks;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

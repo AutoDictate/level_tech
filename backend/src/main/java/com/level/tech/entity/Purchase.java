@@ -108,6 +108,9 @@ public class Purchase {
     @Column(name = "consigned_to")
     private Branch consignedTo;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

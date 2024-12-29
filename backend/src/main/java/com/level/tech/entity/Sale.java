@@ -106,6 +106,9 @@ public class Sale {
     @Column(name = "grand_total", nullable = false)
     private double grandTotal;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

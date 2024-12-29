@@ -51,9 +51,11 @@ public class SaleItemServiceImpl implements SaleItemService {
     @Override
     @Transactional
     public void deleteSaleItem(final Long id) {
-        SaleItem purchaseDetails = saleItemRepository.findById(id)
+        SaleItem saleItemDetails = saleItemRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Purchase Details not found"));
-        saleItemRepository.delete(purchaseDetails);
+
+        saleItemDetails.setIsDeleted(Boolean.TRUE);
+        saleItemRepository.save(saleItemDetails);
     }
 
     @Override
